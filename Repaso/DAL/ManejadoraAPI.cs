@@ -1,62 +1,119 @@
-﻿using ENT;
+﻿using DTO;
+using ENT;
+using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Collections.ObjectModel;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using System.Net;
-using System.Globalization;
-using System.Collections.ObjectModel;
 
 namespace DAL
 {
     public class ManejadoraAPI
     {
-        static String uri = "https://localhost:7103/API/Personas";
-        public static async Task<ObservableCollection<Personas>> getPersonas()
+        static string uri = "https://localhost:7103/API/Personas";
+
+        public static async Task<ObservableCollection<Personas>> ObtenerListado()
         {
-            ObservableCollection<Personas> listaPersonas = new ObservableCollection<Personas>();
-            HttpClient httpClient = new HttpClient();
-            HttpResponseMessage response;
-            string textoJsonRes;
+            ObservableCollection<Personas> listado = new ObservableCollection<Personas>();
+
+            using HttpClient httpClient = new HttpClient();
 
             try
             {
-                response = await httpClient.GetAsync(uri);
+                HttpResponseMessage response = await httpClient.GetAsync(uri);
                 if (response.IsSuccessStatusCode)
                 {
-                    textoJsonRes = await httpClient.GetStringAsync(uri);
-                    httpClient.Dispose();
-                    listaPersonas = JsonConvert.DeserializeObject<ObservableCollection<Personas>>(textoJsonRes);
+                    string textoJsonRes = await response.Content.ReadAsStringAsync();
+                    var personas = JsonConvert.DeserializeObject<ObservableCollection<Personas>>(textoJsonRes);
+
+                    if (personas != null)
+                    {
+                        listado = personas;
+                    }
                 }
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception("Error al obtener los datos", ex);
             }
-            return listaPersonas;
+
+            return listado;
         }
 
-
-        public async Task<HttpStatusCode> insertarPersona(Personas per)
+        public static async Task<Personas> ObtenerObjMAUI(int id)
         {
-            HttpClient mihttpClient = new HttpClient();
-            string datos;
-            HttpContent contenido;
-            Uri miUri = new Uri($"{uri}Personas");
-            HttpResponseMessage miRespuesta = new HttpResponseMessage();
+            string miUri = $"{uri}/{id}";
+            Personas obj = null;
+
+            using HttpClient httpClient = new HttpClient();
+
             try
             {
-                datos = JsonConvert.SerializeObject(per);
-                contenido = new StringContent(datos, System.Text.Encoding.UTF8, "application/json");
-                miRespuesta = await mihttpClient.PostAsync(miUri, contenido);
+                HttpResponseMessage response = await httpClient.GetAsync(miUri);
+                if (response.IsSuccessStatusCode)
+                {
+                    string textoJsonRespuesta = await response.Content.ReadAsStringAsync();
+                    obj = JsonConvert.DeserializeObject<Personas>(textoJsonRespuesta) ?? new Personas();
+                }
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception("Error al obtener el objeto", ex);
             }
-            return miRespuesta.StatusCode;
+
+            return obj ?? new Personas();
         }
-    }  
+
+        public static async Task<bool> InsertarObjMAUI(Personas obj)
+        {
+            using HttpClient httpClient = new HttpClient();
+
+            try
+            {
+                string json = JsonConvert.SerializeObject(obj);
+                StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+                HttpResponseMessage respuesta = await httpClient.PostAsync(uri, content);
+                return respuesta.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al insertar el objeto", ex);
+            }
+        }
+
+        public static async Task<bool> ActualizarObj(Personas obj)
+        {
+            string miUri = $"{uri}/{obj.Id}";
+            using HttpClient httpClient = new HttpClient();
+
+            try
+            {
+                string json = JsonConvert.SerializeObject(obj);
+                StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+                HttpResponseMessage respuesta = await httpClient.PutAsync(miUri, content);
+                return respuesta.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al actualizar el objeto", ex);
+            }
+        }
+
+        public static async Task<bool> EliminarObj(int id)
+        {
+            string miUri = $"{uri}/{id}";
+            using HttpClient httpClient = new HttpClient();
+
+            try
+            {
+                HttpResponseMessage respuesta = await httpClient.DeleteAsync(miUri);
+                return respuesta.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al eliminar el objeto", ex);
+            }
+        }
+    }
 }

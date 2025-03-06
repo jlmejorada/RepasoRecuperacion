@@ -6,14 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ENT;
+using DAL;
 
 namespace APIMaui.VM
 {
     public class ListadoPersonasVM : clsVMBase
     {
-
-
-
         #region ATRIBUTO
         private ObservableCollection<Personas> lista = new ObservableCollection<Personas>();
         private Personas personaSeleccionada;
@@ -47,8 +45,7 @@ namespace APIMaui.VM
         #region CONSTRUCTOR
         public ListadoPersonasVM()
         {
-            cargaLista();
-
+            // Eliminamos la llamada a cargaLista aquí
             btnDetallesCmd = new DelegateCommand(btnDetallesCmdExecute, btnCmdCanExecute);
             btnEditarCmd = new DelegateCommand(btnEditaCmdExecute, btnCmdCanExecute);
             btnBorrarCmd = new DelegateCommand(btnBorraCmdExecute, btnCmdCanExecute);
@@ -56,12 +53,7 @@ namespace APIMaui.VM
         }
         #endregion
 
-
         #region FUNCIONES
-        /// <summary>
-        /// Funcion que comprueba si se ha seleccionado a una persona
-        /// </summary>
-        /// <returns></returns>
         private bool btnCmdCanExecute()
         {
             bool estaSeleccionada = false;
@@ -71,16 +63,18 @@ namespace APIMaui.VM
             }
             return estaSeleccionada;
         }
+
         private async void btnDetallesCmdExecute()
         {
             Personas persona = personaSeleccionada;
             var queryParams = new Dictionary<string, Object>
             {
-                 {"persona",  persona}
+                 {"idPersona",  persona.Id}
             };
 
             await Shell.Current.GoToAsync("///detallesPersona", queryParams);
         }
+
         private async void btnEditaCmdExecute()
         {
             Personas persona = new Personas(PersonaSeleccionada);
@@ -97,30 +91,24 @@ namespace APIMaui.VM
             await Shell.Current.GoToAsync("///anadePersona");
         }
 
-        private void btnBorraCmdExecute()
+        private async void btnBorraCmdExecute()
         {
-            Personas persona = personaSeleccionada;
-            try
-            {
-                //ClsManejadoraPersonaBL.BorraPersonaBL(persona.Id);
-                //lista.Remove(persona);
-                //NotifyPropertyChanged("Lista");
-            }
-            catch
-            {
-
-            }
+            await ManejadoraAPI.EliminarObj(personaSeleccionada.Id);
+            lista.Remove(personaSeleccionada);
+            OnPropertyChanged("Lista");
         }
 
-        private async void cargaLista()
+        // Esta función se llama cuando la vista aparece
+        public async void cargaLista()
         {
-            ObservableCollection<Personas> prueba = await DAL.ManejadoraAPI.getPersonas();
+            lista.Clear();
+            ObservableCollection<Personas> prueba = await DAL.ManejadoraAPI.ObtenerListado();
             foreach (Personas persona in prueba)
             {
                 lista.Add(persona);
             }
+            OnPropertyChanged(nameof(lista));
         }
         #endregion
-
     }
 }

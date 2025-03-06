@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="APIMaui.Views.AgregarView"
+             xmlns:vmodel="clr-namespace:APIMaui.VM"
+             Title="AgregarView">
+
+    <ContentPage.BindingContext>
+        <vmodel:AgregarVM />
+    </ContentPage.BindingContext>
+
+    <Grid Padding="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Button Command="{Binding BtnVolverCmd}" Grid.Row="0" Grid.Column="0" Text="Volver" MaximumWidthRequest="130"/>
+        <Entry Grid.Row="1"
+                Grid.Column="1"
+                MaximumWidthRequest="300"
+                Grid.ColumnSpan="2"
+                Placeholder="Nombre"
+                Text="{Binding Persona.Nombre}" Margin="5"/>
+        <Entry Grid.Row="2"
+                Grid.Column="1"
+                MaximumWidthRequest="300"
+                Grid.ColumnSpan="2"
+                Placeholder="Direccion"
+                Text="{Binding Persona.Direccion}" Margin="5"/>
+        <Button Command="{Binding BtnGuardarCmd}" Grid.Row="3" Grid.Column="1" Text="Guardar" MaximumWidthRequest="130" Margin="10"/>
+    </Grid>
+
+</ContentPage>

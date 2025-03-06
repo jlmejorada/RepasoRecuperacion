@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="APIMaui.Views.ActualizaView"
+             xmlns:vmodel="clr-namespace:APIMaui.VM"
+             Title="ActualizaView">
+
+    <ContentPage.BindingContext>
+        <vmodel:ActualizaVM />
+    </ContentPage.BindingContext>
+
+    <Grid Padding="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <!-- Fila para el botón "Volver" -->
+            <RowDefinition Height="Auto" />
+            <!-- Fila para el campo "Nombre" -->
+            <RowDefinition Height="Auto" />
+            <!-- Fila para el campo "Dirección" -->
+            <RowDefinition Height="Auto" />
+            <!-- Fila para el botón "Guardar" -->
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <!-- Columna para los botones -->
+            <ColumnDefinition Width="*" />
+            <!-- Columna para las entradas de texto -->
+        </Grid.ColumnDefinitions>
+
+        <!-- Botón Volver -->
+        <Button Command="{Binding BtnVolverCmd}" Grid.Row="0" Grid.Column="0" Text="Volver" MaximumWidthRequest="130" Margin="0,0,0,10"/>
+
+        <!-- Entrada para Nombre -->
+        <Entry Grid.Row="1" Grid.Column="1" Text="{Binding Persona.Nombre}" MaximumWidthRequest="300" Margin="5"/>
+
+        <!-- Entrada para Dirección -->
+        <Entry Grid.Row="2" Grid.Column="1" Text="{Binding Persona.Direccion}" MaximumWidthRequest="300" Margin="5"/>
+
+        <!-- Botón Guardar -->
+        <Button Command="{Binding BtnGuardarCmd}" Grid.Row="3" Grid.Column="1" Text="Guardar" MaximumWidthRequest="130" Margin="5"/>
+    </Grid>
+</ContentPage>

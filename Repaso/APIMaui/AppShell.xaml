@@ -20,12 +20,13 @@
     </FlyoutItem>-->
     
     
-    <!--<ShellContent Title="Detalles Persona" Route="detallesPersona"
-          ContentTemplate="{DataTemplate views:DetallesPersonaView}" />
+    <ShellContent Title="Detalles Persona" Route="detallesPersona"
+          ContentTemplate="{DataTemplate views:DetallesView}" />
+    
     <ShellContent Title="Edita Persona" Route="editaPersona"
-      ContentTemplate="{DataTemplate views:EditarPersonaView}" />
+      ContentTemplate="{DataTemplate views:ActualizaView}" />
 
     <ShellContent Title="Añade Persona" Route="anadePersona"
-  ContentTemplate="{DataTemplate views:AgregarPersonaView}" />-->
+  ContentTemplate="{DataTemplate views:AgregarView}" />
 
 </Shell>
